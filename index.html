@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            text-align: center;
+        }
+
+        #movienamein {
+            height: 40px;
+            width: 250px;
+            border: 2px solid red;
+        }
+
+        #submit {
+            height: 40px;
+            width: 80px;
+        }
+
+        #moviecontainer {
+            margin-top: 50px;
+        }
+    </style>
+</head>
+
+<body>
+    <form id="form" action="">
+        <input id="movienamein" type="text" placeholder="enter movie name">
+        <input id="submit" type="submit">
+    </form>
+    <div id="moviecontainer"></div>
+</body>
+
+</html>
+<script>
+    var form = document.querySelector('#form')
+    form.addEventListener('submit', myfun)
+    function myfun() {
+        event.preventDefault();
+        var movienamein = form.movienamein.value;
+        // console.log(moviename)
+        const url = 'http://www.omdbapi.com/?i=tt3896198&apikey=4c3e2a9d&t=' + movienamein;
+        fetch(url)
+            .then(function (res) {
+                return res.json()
+            })
+            .then(function (res) {
+                console.log(res)
+                displaymovie(res)
+            })
+            .catch(function (err) {
+                // console.log(err)
+                displayerror(err)
+            })
+
+    }
+
+    function displaymovie(res) {
+        // console.log(res)
+        var moviecontainer = document.querySelector('#moviecontainer')
+        moviecontainer.innerHTML = null;
+        var div_for_img = document.createElement('div')
+        var img = document.createElement('img')
+        img.src = res.Poster
+        var moviename = document.createElement('h1')
+        moviename.innerText = res.Title
+        var actors = document.createElement('h1')
+        actors.innerText = res.Actors
+        var year = document.createElement('h1')
+        year.innerText = res.Released
+        var rating = document.createElement('h1')
+        rating.innerText = res.Ratings[0].Value;
+        moviecontainer.append(img, moviename, actors, year, rating)
+        if (res.imdbRating > 8.5) {
+            var rating2 = document.createElement('h3')
+            rating2.innerText = 'Recommended';
+            rating2.style.color = 'red';
+            moviecontainer.append(rating2)
+        }
+
+    }
+
+
+
+    function displayerror(err) {
+        var moviecontainer = document.querySelector('#moviecontainer')
+        moviecontainer.innerHTML = null;
+        var div_for_img = document.createElement('div')
+        var img = document.createElement('img')
+        img.src = 'https://th.bing.com/th/id/OIP._41f7akcF89JTbF8VwOL8gHaFi?w=219&h=180&c=7&r=0&o=5&dpr=1.5&pid=1.7'
+
+        div_for_img.append(img)
+        console.log(err)
+        moviecontainer.append(div_for_img)
+
+    }
+// var movie='iron man'
+
+</script>
